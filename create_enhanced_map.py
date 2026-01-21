@@ -19,6 +19,10 @@ print("Loading VTD/precinct shapefile...")
 precincts = gpd.read_file("tl_2020_24_vtd20.shp")
 print(f"Loaded {len(precincts)} precincts")
 
+print("Loading county boundaries...")
+counties = gpd.read_file("tl_2020_24_county20.shp")
+print(f"Loaded {len(counties)} counties")
+
 print("\nLoading district assignments...")
 districts_csv = pd.read_csv("/Users/davidkunes/Desktop/DKunes_Submission.csv", dtype={'GEOID20': str, 'District': int})
 print(f"Loaded {len(districts_csv)} district assignments")
@@ -31,6 +35,7 @@ blocks_with_districts = blocks.merge(districts_csv, on='GEOID20', how='left')
 print("Converting to WGS84...")
 blocks_with_districts = blocks_with_districts.to_crs(epsg=4326)
 precincts = precincts.to_crs(epsg=4326)
+counties = counties.to_crs(epsg=4326)
 
 # Dissolve blocks into district boundaries
 print("Creating district boundaries...")
@@ -106,6 +111,30 @@ folium.GeoJson(
     )
 ).add_to(precinct_layer)
 precinct_layer.add_to(m)
+
+# Add county boundaries layer
+print("Adding county boundaries...")
+county_layer = folium.FeatureGroup(name='County Boundaries', show=True)
+
+def county_style(feature):
+    return {
+        'fillColor': 'transparent',
+        'fillOpacity': 0,
+        'color': '#000000',
+        'weight': 3,
+        'dashArray': '5, 5'
+    }
+
+folium.GeoJson(
+    counties,
+    style_function=county_style,
+    tooltip=folium.GeoJsonTooltip(
+        fields=['NAME20'],
+        aliases=['County:'],
+        style='font-size: 12px; font-weight: bold;'
+    )
+).add_to(county_layer)
+county_layer.add_to(m)
 
 # Major communities/municipalities with coordinates
 # Format: (name, lat, lon, type) - type: 'city', 'town', 'cdp', 'community'
