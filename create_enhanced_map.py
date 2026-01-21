@@ -140,6 +140,11 @@ county_layer.add_to(m)
 # Format: (name, lat, lon, type) - type: 'city', 'town', 'cdp', 'community'
 print("Adding community markers...")
 communities = [
+    # Federal Facilities
+    ("NIH (National Institutes of Health)", 39.0003, -77.1056, "federal"),
+    ("FDA (Food & Drug Administration)", 39.0358, -76.9797, "federal"),
+    ("Walter Reed NNMC", 39.0015, -77.0946, "federal"),
+
     # Montgomery County
     ("Bethesda", 38.9807, -77.1003, "cdp"),
     ("Rockville", 39.0840, -77.1528, "city"),
@@ -248,7 +253,10 @@ for name, lat, lon, comm_type in communities:
     color = district_colors.get(district, '#808080')
 
     # Different icons for different types
-    if comm_type == 'city':
+    if comm_type == 'federal':
+        icon = folium.Icon(color='green', icon='building', prefix='fa')
+        radius = 8
+    elif comm_type == 'city':
         icon = folium.Icon(color='darkblue', icon='building', prefix='fa')
         radius = 8
     elif comm_type == 'town':
