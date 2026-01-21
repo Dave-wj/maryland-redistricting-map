@@ -1,0 +1,18 @@
+# Large shapefiles - not needed for web deployment
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.xml
+
+# Large GeoJSON files
+blocks_with_districts.geojson
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# OS files
+.DS_Store
